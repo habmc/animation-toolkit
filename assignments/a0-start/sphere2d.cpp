@@ -14,8 +14,12 @@ class Sphere2D : public atkui::Framework {
     // draw a sphere at center of screen
     double x = width() * 0.5;
     double y = height() * 0.5;
-    double radius = 100; 
+    double radius = 100;
     drawSphere(vec3(x,y,0), radius);
+
+    // draw a sphere behind the created sphere
+    setColor(vec3(1,0,0));
+    drawSphere(vec3(x,y,-150), 200);
   }
 };
 
