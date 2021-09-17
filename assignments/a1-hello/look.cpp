@@ -33,26 +33,21 @@ public:
     drawSphere(target, targetRadius);
   }
 
-  void mouseMove(int x, int y)
-  {
-    _mouseX = x;
-    _mouseY = height() - y;
-
-    vec3 leftPivotPosition = vec3(width() / 3, 0.5 * height(), 0);
-    vec3 rightPivotPosition = vec3(2 * width() / 3, 0.5 * height(), 0);
-
-    float leftTheta = atan2(_mouseY - leftPupilPosition[1], _mouseX - leftPupilPosition[0]);
-    leftPupilPosition = vec3(15 * cos(leftTheta) + leftPivotPosition[0], 15 * sin(leftTheta) + leftPivotPosition[1], 0);
-
-    float rightTheta = atan2(_mouseY - rightPupilPosition[1], _mouseX - rightPupilPosition[0]);
-    rightPupilPosition = vec3(15 * cos(rightTheta) + rightPivotPosition[0], 15 * sin(rightTheta) + rightPivotPosition[1], 0);
-  }
-
   void mouseMotion(int pX, int pY, int dx, int dy)
   {
     if (movingTarget)
     {
-      mouseMove(pX, pY);
+      _mouseX = pX;
+      _mouseY = height() - pY;
+
+      vec3 leftPivotPosition = vec3(width() / 3, 0.5 * height(), 0);
+      vec3 rightPivotPosition = vec3(2 * width() / 3, 0.5 * height(), 0);
+
+      float leftTheta = atan2(_mouseY - leftPupilPosition[1], _mouseX - leftPupilPosition[0]);
+      leftPupilPosition = vec3(15 * cos(leftTheta) + leftPivotPosition[0], 15 * sin(leftTheta) + leftPivotPosition[1], 0);
+
+      float rightTheta = atan2(_mouseY - rightPupilPosition[1], _mouseX - rightPupilPosition[0]);
+      rightPupilPosition = vec3(15 * cos(rightTheta) + rightPivotPosition[0], 15 * sin(rightTheta) + rightPivotPosition[1], 0);
     }
   }
 

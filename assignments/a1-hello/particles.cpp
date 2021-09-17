@@ -19,37 +19,41 @@ public:
 
   virtual void setup()
   {
-    for (int i = 0; i < *(&particles + 1) - particles; i++)
+    vec3 baseColor = vec3(0.6, 0.4, 0.6);
+    for (int i = 0; i < sizeof(particles) / sizeof(particles[0]); i++)
     {
       Particle p;
-      p.position = vec3(rand() % (int)width(), rand() % (int)height(), rand() % 100);
-      vec3 baseColor = vec3(0.2, 0.4, 0.7);
-      float r1 = -0.2 + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / 0.4));
-      float r2 = -0.2 + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / 0.4));
-      float r3 = -0.2 + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / 0.4));
+      p.position = vec3(rand() % (int)width(), rand() % (int)height(), 0);
+      float minColorChange = -0.2f;
+      float maxColorChange = 0.2f;
+      float r1 = minColorChange + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / (maxColorChange - minColorChange)));
+      float r2 = minColorChange + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / (maxColorChange - minColorChange)));
+      float r3 = minColorChange + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / (maxColorChange - minColorChange)));
       p.color = baseColor - vec3(r1, r2, r3);
-      p.velocity = rand() % (20 - 5 + 1) + 5;
+      int minVelocity = 50;
+      int maxVelocity = 120;
+      p.velocity = rand() % (maxVelocity - minVelocity + 1) + minVelocity;
       particles[i] = p;
     }
   }
 
   virtual void scene()
   {
-    for (int i = 0; i < *(&particles + 1) - particles; i++)
+    int n = sizeof(particles) / sizeof(particles[0]);
+    for (int i = 0; i < n; i++)
     {
-      setColor(particles[i].color);
+      particles[i].position[0] = particles[i].position[0] + dt() * particles[i].velocity;
+      particles[i].position[1] = particles[i].position[1] + dt() * particles[i].velocity;
+
       if (particles[i].position[0] >= width())
       {
         particles[i].position[0] = 0;
       }
-      else if (particles[i].position[1] >= height())
+      if (particles[i].position[1] >= height())
       {
         particles[i].position[1] = 0;
       }
-      else
-      {
-        particles[i].position = particles[i].position + vec3(0.1) * particles[i].velocity;
-      }
+      setColor(particles[i].color);
       drawSphere(particles[i].position, 10);
     }
   }

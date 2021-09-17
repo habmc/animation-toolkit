@@ -15,7 +15,7 @@ public:
       int radius = 0;
       for (int i = 0; i < numLayers; i++)
       {
-         colors[i] = pallet[rand() % 5];
+         colors[i] = pallet[i % 5];
          radiusArray[i] = radius;
          for (int j = 0; j < numCircles; j++)
          {
