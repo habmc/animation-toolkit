@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Readme
 
 ## Assignment 1
@@ -27,3 +28,12 @@ Rose curves with different numbers of petals
 
 <img src="a1-unique.gif" alt="rose curves with different numbers of petalss" width="400" height="400">
 
+=======
+# Readme
+
+TODO: Replace this text with
+
+* images, gifs, videos
+* brief description of what each image/gif/video shows
+
+>>>>>>> upstream/main
