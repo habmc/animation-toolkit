@@ -17,6 +17,8 @@ class Example : public atkui::Framework {
       vec3 b3 = vec3(width(), 0, 0);
       setColor(vec3(1,1,0));
       drawLine(b0, b1);
+      drawLine(b1, b2);
+      drawLine(b2, b3);
   }
 };
 
