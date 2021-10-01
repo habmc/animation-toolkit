@@ -45,11 +45,12 @@ void CurveEditor::scene()
   }
   if (mShowControlPoints)
   {
+    setColor(vec3(1, 1, 0));
+
     if (mSpline.getInterpolationType() == "Catmull-Rom")
     {
       for (int i = 1; i < mSpline.getNumControlPoints() - 2; i += 3)
       {
-        setColor(vec3(1, 1, 0));
         drawSphere(mSpline.getControlPoint(i), 5);
         drawSphere(mSpline.getControlPoint(i + 1), 5);
         drawLine(mSpline.getControlPoint(i - 1), mSpline.getControlPoint(i));
