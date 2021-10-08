@@ -79,7 +79,7 @@ namespace atkmath
          alpha = -atan2(M[1][2], M[2][2]);
       } else {
          theta = atan2(M[0][2], M[0][0]);
-         alpha = atan2(M[1][1], M[1][1]);
+         alpha = atan2(M[2][1], M[1][1]);
       }
       return Vector3(alpha, theta, beta);   
    }
