@@ -1,7 +1,13 @@
 # Readme
 
-TODO: Replace this text with
+## Assignment 4
 
-* images, gifs, videos
-* brief description of what each image/gif/video shows
+### Part 1 & 2
+A grid of spinning teapots
 
+<img src="a4-teapot.gif" alt="cspinning teapots">
+
+### Part 3
+Spinning triangles that change colors after every 360 degree rotation
+
+<img src="a4-unique.gif" alt="spinning triangles">
