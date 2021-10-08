@@ -50,32 +50,105 @@ namespace atkmath
 
    Vector3 Matrix3::toEulerAnglesXYZ() const
    {
-      return Vector3();
+      Matrix3 M = *this;
+      double theta = asin(M[0][2]);  
+      double alpha, beta;
+      if (theta == PI / 2) {
+         beta = 0;
+         alpha = atan2(M[1][0], M[1][1]);
+      } else if (theta == -PI / 2) {
+         beta = 0;
+         alpha = -atan2(M[1][0], M[1][1]);
+      } else {
+         beta = -atan2(M[0][1], M[0][0]);
+         alpha = -atan2(M[1][2], M[2][2]);
+      }
+      return Vector3(alpha, theta, beta);      
    }
 
    Vector3 Matrix3::toEulerAnglesXZY() const
    {
-      return Vector3();
+      Matrix3 M = *this;
+      double beta = -asin(M[0][1]);  
+      double alpha, theta;
+      if (beta == PI / 2) {
+         theta = 0;
+         alpha = -atan2(M[1][2], M[2][2]);
+      } else if (beta == -PI / 2) {
+         theta = 0;
+         alpha = -atan2(M[1][2], M[2][2]);
+      } else {
+         theta = atan2(M[0][2], M[0][0]);
+         alpha = atan2(M[1][1], M[1][1]);
+      }
+      return Vector3(alpha, theta, beta);   
    }
 
    Vector3 Matrix3::toEulerAnglesYXZ() const
    {
-      return Vector3();
+      Matrix3 M = *this;
+      double alpha = -asin(M[1][2]);  
+      double beta, theta;
+      if (alpha == PI / 2 || alpha == -PI / 2) {
+         beta = 0;
+         theta = -atan2(M[2][0], M[0][0]);
+      } else {
+         beta = atan2(M[1][0], M[1][1]);
+         theta = atan2(M[0][2], M[2][2]);
+      }
+      return Vector3(alpha, theta, beta);    
    }
 
    Vector3 Matrix3::toEulerAnglesYZX() const
    {
-      return Vector3();
-   }
+      Matrix3 M = *this;
+      double beta = asin(M[1][0]);  
+      double alpha, theta;
+      if (beta == PI / 2) {
+         alpha = 0;
+         theta = atan2(M[0][2], M[2][2]);
+      } else if (beta == -PI / 2) {
+         alpha = 0;
+         theta = atan2(M[0][2], M[2][2]);
+      } else {
+         alpha = -atan2(M[1][2], M[1][1]);
+         theta = -atan2(M[2][0], M[0][0]);
+      }
+      return Vector3(alpha, theta, beta);  
+      }
 
    Vector3 Matrix3::toEulerAnglesZXY() const
    {
-      return Vector3();
+      Matrix3 M = *this;
+      double alpha = asin(M[2][1]);  
+      double theta, beta;
+      if (alpha == PI / 2 || alpha == -PI / 2) {
+         theta = 0;
+         beta = atan2(M[1][0], M[0][0]);
+      } else {
+         theta = -atan2(M[2][0], M[2][2]);
+         beta = -atan2(M[0][1], M[1][1]);
+      }
+      return Vector3(alpha, theta, beta);   
    }
 
    Vector3 Matrix3::toEulerAnglesZYX() const
    {
-      return Vector3();
+      Matrix3 M = *this;
+      double theta = asin(-M[2][0]);  
+      double alpha, beta;
+      if (theta == PI / 2) {
+         beta = 0;
+         alpha = atan2(M[0][1], M[0][2]);
+      } else if (theta == -PI / 2) {
+         beta = 0;
+         alpha = -atan2(M[0][1], M[1][1]);
+      } 
+      else {
+         beta = atan2(M[1][0], M[0][0]);
+         alpha = atan2(M[2][1], M[2][2]);
+      }
+      return Vector3(alpha, theta, beta);
    }
 
    void Matrix3::fromEulerAnglesXYZ(const Vector3& angleRad)
@@ -153,6 +226,6 @@ namespace atkmath
    void Matrix3::fromAxisAngle(const Vector3& axis, double angleRad)
    {
       // TODO
-      // *this = Identity;
+      *this = Identity;
    }
 }
