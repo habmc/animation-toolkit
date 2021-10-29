@@ -1,8 +1,8 @@
 #include "atkui/framework.h"
 #include "atk/toolkit.h"
 using namespace atk;
+using glm::quat;
 using glm::vec3;
-
 class Tentacle : public atkui::Framework
 {
 public:
@@ -46,11 +46,12 @@ public:
       // hint: use glm::angleAxis(...) to compute quaternions for each joint
       _tentacle.fk(); // computes local2global transforms
       setColor(vec3(0, 1, 0));
-
       // todo: loop over all joints and draw
       int numJoints = _tentacle.getNumJoints();
       for (int i = 0; i < numJoints; i++)
       {
+         _tentacle.getByID(i)->setLocalRotation(glm::angleAxis(sin(elapsedTime() + i), vec3(0, 0, 1)));
+
          Joint *j = _tentacle.getByID(i);
          if (j->getParent() == 0)
          {
