@@ -33,8 +33,7 @@ int main(int argc, char **argv)
    }
 
    // Get the joint for the hand by looking up by name ("Beta:LeftHand")
-   // Joint *hand = skeleton.getByName("Beta:LeftHand"); // comment this out because of segmentation error
-   Joint *hand = skeleton.getByID(11);
+   Joint *hand = skeleton.getByName("Beta:LeftHand\r");
    vec3 offset = hand->getLocalTranslation();
    std::cout << "The offset between the left hand and its parent is " << glm::to_string(offset) << std::endl;
 
