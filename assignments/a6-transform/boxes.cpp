@@ -46,7 +46,7 @@ public:
          std::cout << "Position of b2 relative to b1 is " << value << std::endl;
 
       // Question 3
-      Transform F32 = F30 * F20.inverse(); // transform from frame 3 to frame 2
+      Transform F32 = F20.inverse() * F30; // transform from frame 3 to frame 2
       value = F32.transformPoint(vec3(0));
       if (!once)
          std::cout << "Position of b3 relative to b2 is " << value << std::endl;
