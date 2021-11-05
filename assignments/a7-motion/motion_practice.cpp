@@ -36,8 +36,9 @@ int main(int argc, char **argv)
    // Hint: use extractEulerAngleRO (defined in atk/glmmath.h)
    Joint *hand = skeleton.getByName("Beta:LeftHand");
    int id = hand->getID();
-   // vec3 eulerXYZ = extractEulerAngleRO(XYZ, frame5.jointRots[id]);
-   // std::cout << "The local rotation of the left hand on frame 5 is: " << glm::to_string(eulerXYZ) << std::endl;
+   mat3 rotation = toMat3(frame5.jointRots[id]);
+   vec3 eulerXYZ = extractEulerAngleRO(XYZ, rotation);
+   std::cout << "The local rotation of the left hand on frame 5 is: " << glm::to_string(eulerXYZ) << std::endl;
 
    // What is the speed of the character?
    // Hint: Use the first and last frames to get the distance traveled over the motion clip
