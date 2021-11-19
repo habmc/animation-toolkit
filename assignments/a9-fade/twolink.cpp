@@ -8,13 +8,15 @@
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
+#include "atkmath/matrix3.h"
+#include "atkmath/quaternion.h"
 
 using namespace atk;
 using namespace glm;
 
 class AIKSimple : public atkui::Framework
 {
- public:
+public:
   AIKSimple() : atkui::Framework(atkui::Perspective),
                 mDrawer(),
                 mGoalPosition()
@@ -75,7 +77,8 @@ class AIKSimple : public atkui::Framework
     ImGui::SliderFloat("X", &mGoalPosition[0], -500.0f, 500.0f);
     ImGui::SliderFloat("Y", &mGoalPosition[1], -500.0f, 500.0f);
     ImGui::SliderFloat("Z", &mGoalPosition[2], -500.0f, 500.0f);
-    if (ImGui::Button("Reset")) reset();
+    if (ImGui::Button("Reset"))
+      reset();
     ImGui::End();
 
     // Rendering
@@ -127,9 +130,60 @@ class AIKSimple : public atkui::Framework
   void solveIKTwoLink(Skeleton &skeleton, const vec3 &goalPosition)
   {
     // todo: implement two link IK algorithm
+    float l1 = length(skeleton.getByName("Elbow")->getGlobalTranslation() - skeleton.getByName("Shoulder")->getGlobalTranslation());
+    float l2 = length(skeleton.getByName("Wrist")->getGlobalTranslation() - skeleton.getByName("Elbow")->getGlobalTranslation());
+    float r = length(goalPosition);
+
+    float cosFi = (pow(r, 2) - pow(l1, 2) - pow(l2, 2)) / (-2 * l1 * l2);
+    cosFi = min(max(cosFi, -1.0f), 1.0f);
+    float fi = acos(cosFi);
+
+    float theta2z = fi - pi<float>();
+
+    float sinTheta1z = (-1 * l2 * sin(theta2z)) / r;
+    sinTheta1z = min(max(sinTheta1z, -1.0f), 1.0f);
+    float theta1z = asin(sinTheta1z);
+
+    float gamma = asin(goalPosition[1] / r);
+    float beta = atan2(-1 * goalPosition[2], goalPosition[0]);
+
+    quat Q21 = angleAxis(theta2z, vec3(0, 0, 1));
+    quat RyBeta = angleAxis(beta, vec3(0, 1, 0));
+    quat RzGamma = angleAxis(gamma, vec3(0, 0, 1));
+    quat RzTheta1Z = angleAxis(theta1z, vec3(0, 0, 1));
+
+    quat Q10 = RyBeta * RzGamma * RzTheta1Z;
+
+    skeleton.getByName("Elbow")->setLocalRotation(Q21);
+    skeleton.getByName("Shoulder")->setLocalRotation(Q10);
+    skeleton.getRoot()->fk();
   }
 
- private:
+  mat3 Rx(const float &theta)
+  {
+    return mat3(
+        1, 0, 0,
+        0, cos(theta), -sin(theta),
+        0, sin(theta), cos(theta));
+  }
+
+  mat3 Ry(const float &theta)
+  {
+    return mat3(
+        cos(theta), 0, sin(theta),
+        0, 1, 0,
+        -sin(theta), 0, cos(theta));
+  }
+
+  mat3 Rz(const float &theta)
+  {
+    return mat3(
+        cos(theta), -sin(theta), 0,
+        sin(theta), cos(theta), 0,
+        0, 0, 1);
+  }
+
+private:
   atk::Skeleton mActor;
   atkui::SkeletonDrawer mDrawer;
   glm::vec3 mGoalPosition;
