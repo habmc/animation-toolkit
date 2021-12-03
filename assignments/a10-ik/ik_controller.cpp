@@ -54,7 +54,8 @@ bool IKController::solveIKAnalytic(Skeleton &skeleton,
   vec3 r0 = ankle->getGlobalTranslation() - hip->getGlobalTranslation();
   vec3 e0 = goalPos - ankle->getGlobalTranslation();
   float phi2 = atan2(length(cross(r0, e0)), dot(r0, r0) + dot(r0, e0));
-  vec3 u0 = normalize(cross(r0, e0));
+  vec3 u0 = cross(r0, e0);
+  u0 = length(u0) == 0 ? vec3(0, 0, 1) : normalize(u0);
 
   vec3 rotAxis = (hip != skeleton.getRoot()) ? hipParent->getLocal2Global().inverse().transformVector(u0) : u0;
 
@@ -87,7 +88,8 @@ bool IKController::solveIKCCD(Skeleton &skeleton, int jointid,
       vec3 r0 = endEffector->getGlobalTranslation() - curr->getGlobalTranslation();
       vec3 e0 = goalPos - endEffector->getGlobalTranslation();
       float phi2 = atan2(length(cross(r0, e0)), dot(r0, r0) + dot(r0, e0));
-      vec3 u0 = normalize(cross(r0, e0));
+      vec3 u0 = cross(r0, e0);
+      u0 = length(u0) == 0 ? vec3(0, 0, 1) : normalize(u0);
       u0 = (curr->getParent() != skeleton.getRoot()) ? curr->getParent()->getLocal2Global().inverse().transformVector(u0) : u0;
 
       if (length(u0) > 0)
