@@ -8,32 +8,44 @@ using namespace atk;
 using namespace glm;
 using namespace std;
 
-class ALooker : public atkui::Framework {
+class ALooker : public atkui::Framework
+{
 public:
    ALooker() : atkui::Framework(atkui::Perspective) {}
    virtual ~ALooker() {}
 
-   void setup() {
+   void setup()
+   {
       Motion motion;
       BVHReader reader;
       reader.load("../motions/Beta/idle.bvh", _skeleton, motion);
       motion.update(_skeleton, 0);
 
-      _drawer.color = vec3(1,0,0);
+      _drawer.color = vec3(1, 0, 0);
       _head = _skeleton.getByName("Beta:Head");
    }
 
-   void reset(Joint* head) {
+   void reset(Joint *head)
+   {
       head->setLocalRotation(IdentityQ);
       head->fk();
    }
 
-   void lookAtTarget(Joint* head, const vec3& target) {
+   void lookAtTarget(Joint *head, const vec3 &target)
+   {
       // TODO: Your code here
+      vec3 z = normalize(target - head->getGlobalTranslation());
+      vec3 x = normalize(cross(vec3(0, 1, 0), z));
+      vec3 y = normalize(cross(z, x));
+
+      quat localToGlobal = mat3(x, y, z);
+      quat desiredRotation = head->getLocalRotation() * inverse(head->getGlobalRotation()) * localToGlobal;
+      head->setLocalRotation(desiredRotation);
       head->fk();
    }
 
-   void scene() {  
+   void scene()
+   {
       float r = 100;
       float angle = elapsedTime();
       _target = vec3(r * cos(angle), r * sin(angle) + r, 150);
@@ -43,22 +55,22 @@ public:
       _drawer.draw(_skeleton, *this);
 
       vec3 globalHeadPos = _head->getGlobalTranslation();
-      vec3 globalForward = _head->getGlobalRotation() * vec3(0,0,1);
+      vec3 globalForward = _head->getGlobalRotation() * vec3(0, 0, 1);
 
-      setColor(vec3(0,0,1));
-      drawLine(globalHeadPos, globalHeadPos + 200.0f*globalForward);
+      setColor(vec3(0, 0, 1));
+      drawLine(globalHeadPos, globalHeadPos + 200.0f * globalForward);
       drawSphere(_target, 5);
    }
 
    Cyclops _drawer;
    Skeleton _skeleton;
-   Joint* _head;
+   Joint *_head;
    vec3 _target;
 };
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv)
+{
    ALooker viewer;
    viewer.run();
    return 0;
 }
-
