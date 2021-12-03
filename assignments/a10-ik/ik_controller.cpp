@@ -55,13 +55,16 @@ bool IKController::solveIKAnalytic(Skeleton &skeleton,
   vec3 e0 = goalPos - ankle->getGlobalTranslation();
   float phi2 = atan2(length(cross(r0, e0)), dot(r0, r0) + dot(r0, e0));
   vec3 u0 = cross(r0, e0);
-  u0 = length(u0) == 0 ? vec3(0, 0, 1) : normalize(u0);
+  if (length(u0) > 0.001)
+  {
+    u0 = normalize(u0);
 
-  vec3 rotAxis = (hip != skeleton.getRoot()) ? hipParent->getLocal2Global().inverse().transformVector(u0) : u0;
+    vec3 rotAxis = (hip != skeleton.getRoot()) ? hipParent->getLocal2Global().inverse().transformVector(u0) : u0;
 
-  Transform F10 = Transform::Rot(angleAxis(phi2, rotAxis));
+    Transform F10 = Transform::Rot(angleAxis(phi2, rotAxis));
 
-  hip->setLocal2Parent(hip->getLocal2Parent() * F10);
+    hip->setLocal2Parent(hip->getLocal2Parent() * F10);
+  }
   skeleton.fk();
 
   if (length(goalPos - ankle->getGlobalTranslation()) <= epsilon)
@@ -89,16 +92,15 @@ bool IKController::solveIKCCD(Skeleton &skeleton, int jointid,
       vec3 e0 = goalPos - endEffector->getGlobalTranslation();
       float phi2 = atan2(length(cross(r0, e0)), dot(r0, r0) + dot(r0, e0));
       vec3 u0 = cross(r0, e0);
-      u0 = length(u0) == 0 ? vec3(0, 0, 1) : normalize(u0);
-      u0 = (curr->getParent() != skeleton.getRoot()) ? curr->getParent()->getLocal2Global().inverse().transformVector(u0) : u0;
-
-      if (length(u0) > 0)
+      if (length(u0) > 0.001)
       {
-        Transform F = Transform::Rot(glm::angleAxis((float)phi2 * nudgeFactor, u0));
-        curr->setLocal2Parent(curr->getLocal2Parent() * F);
-        skeleton.fk();
+        u0 = normalize(u0);
+        quat rot = glm::angleAxis(phi2, glm::inverse(curr->getParent()->getGlobalRotation()) * u0);
+        curr->setLocalRotation(rot * curr->getLocalRotation());
       }
+      skeleton.fk();
     }
+
     iter++;
   }
   if (length(goalPos - endEffector->getGlobalTranslation()) <= threshold)
