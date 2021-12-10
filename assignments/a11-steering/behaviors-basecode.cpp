@@ -11,7 +11,7 @@ ABehavior::ABehavior(const char *name) : _name(name)
 {
    // TODO: set good values
    setParam("MaxSpeed", 150);
-   setParam("AgentRadius", 50);
+   setParam("AgentRadius", 75);
 }
 
 //--------------------------------------------------------------
@@ -34,7 +34,7 @@ vec3 ASeek::calculateDesiredVelocity(const ASteerable &actor,
 {
    vec3 dist = target - actor.getPosition();
 
-   if (length(dist) <= 25)
+   if (length(dist) <= 40)
    {
       return vec3(0);
    }
@@ -68,8 +68,8 @@ vec3 AFlee::calculateDesiredVelocity(const ASteerable &actor,
 AArrival::AArrival() : ABehavior("Arrival")
 {
    // TODO: Set good parameters
-   setParam("kArrival", 1);
-   setParam("TargetRadius", 30);
+   setParam("kArrival", 10);
+   setParam("TargetRadius", 100);
 }
 
 //
@@ -138,12 +138,12 @@ vec3 AAvoid::calculateDesiredVelocity(const ASteerable &actor,
       }
    }
 
-   if (minDist < world.getObstacle(index).radius + 10)
+   if (minDist < world.getObstacle(index).radius + 30)
    {
       vec3 direction = world.getObstacle(index).position - actor.getPosition();
       return (-1.0f) * glm::normalize(direction) * getParam("MaxSpeed");
    }
-   return actor.getVelocity();
+   return actor.getVelocity() == vec3(0) ? normalize(targetPos - actor.getPosition()) * getParam("MaxSpeed") : actor.getVelocity();
 }
 
 //--------------------------------------------------------------

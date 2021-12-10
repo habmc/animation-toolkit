@@ -50,7 +50,13 @@ void ASteerable::randomizeAppearance()
    // for _time
 
    // to randomize color, call _drawer.setColor
-
+   float r1 = -0.3 + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / 0.6));
+   float r2 = -0.2 + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / 0.6));
+   float r3 = -0.3 + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / 0.6));
+   vec3 color = vec3(0.7, 0.4, 0.6) + vec3(r1, r2, r3);
+   _drawer.color = color;
    // to randomize shape, compute random values for _drawer.setJointRadius
+   _drawer.jointRadius = 5 + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / 15));
+
    // or randomly assign different drawers to have a mix of characters
 }
